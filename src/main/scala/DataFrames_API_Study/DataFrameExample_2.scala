@@ -13,9 +13,9 @@ object DataFrameExample_2 extends App {
     import spark.implicits._
     import spark.sql
   val myList = List((1,"2013-07-25",11599,"CLOSED"),
-    (2,"2013-07-25",256,"PENDING_PAYMENT"),
+    (2,"2014-07-25",256,"PENDING_PAYMENT"),
     (3,"2013-07-25",11599,"COMPLETE"),
-    (4,"2013-07-25",8827,"CLOSED"))
+    (4,"2019-07-25",8827,"CLOSED"))
 
   var df1 = spark.createDataFrame(myList) .toDF("order_id","order_date","customer_id","order_status")
   //spark.sparkContext.parallelize(myList).toDF() - Method Involving RDD
@@ -23,6 +23,8 @@ object DataFrameExample_2 extends App {
     .withColumn("order_date",unix_timestamp(col("order_date").cast(DateType)))
     .withColumn("new_id",monotonically_increasing_id)
     .dropDuplicates("order_date","customer_id")
+    .drop("order_id")
+    .sort("order_date")
   df_new.printSchema()
   df_new.show(false)
 
