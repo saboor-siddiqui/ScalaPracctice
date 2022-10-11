@@ -19,11 +19,14 @@ object DataFrameExample_2 extends App {
 
   var df1 = spark.createDataFrame(myList) .toDF("order_id","order_date","customer_id","order_status")
   //spark.sparkContext.parallelize(myList).toDF() - Method Involving RDD
-  var df_new = df1.withColumn("order_date",unix_timestamp(col("order_date").cast(DateType)))
+  var df_new = df1
+    .withColumn("order_date",unix_timestamp(col("order_date").cast(DateType)))
+    .withColumn("new_id",monotonically_increasing_id)
+    .dropDuplicates("order_date","customer_id")
   df_new.printSchema()
   df_new.show(false)
 
-    scala.io.StdIn.readLine()
-    spark.stop()
+  scala.io.StdIn.readLine()
+  spark.stop()
 
 }
