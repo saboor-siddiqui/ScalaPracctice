@@ -18,8 +18,15 @@ object UDFExample extends App {
       .option("inferSchema","true")
       .option("path","C:/Users/sabbi/OneDrive/Desktop/Shared Folder//-201025-223502.dataset1")
       .load()
-
+    def checkAge(age : Int):String =  {
+    if(age>18) "Yes" else "No"
+    }
+    val parseAgeFunction = udf(checkAge(_:Int):String)
     val df_1: Dataset[Row] = df.toDF("name","age","city")
+    val  df_2 = df_1.withColumn("is_Adult",parseAgeFunction(col("age")))
+    df_2.show(false)
+
+  // Conversion of dataframe to dataset
     val ds_1 = df_1.as[Person]
     ds_1.printSchema()
     ds_1.show(false)
